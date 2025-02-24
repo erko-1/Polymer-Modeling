@@ -12,7 +12,7 @@ epsilon = 1.0
 R_0 = 2.5 * sigma
 T = 1.0
 k_B = 1.0
-num_steps = 2000  # Reduced for visualization
+num_steps = 2000 
 step_size = 1
 optimal_bond_length = 0.9651375794516794
 
