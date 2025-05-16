@@ -1,0 +1,8 @@
+Mittlere sortierte Eigenwerte:
+        λ1 |         λ2 |         λ3
+----------------------------------
+    3.5311 |     3.4419 |     0.0048
+
+Asphärizität und Anisotropie:
+Asphärizität b: 1.807798 ± 0.024992
+Anisotropie κ²: 0.083035 ± 0.000197
