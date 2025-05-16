@@ -1,0 +1,352 @@
+% This is a sample LaTeX input file.  (Version of 12 August 2004.)
+%
+% A '%' character causes TeX to ignore all remaining text on the line,
+% and is used for comments like this one.
+
+\documentclass{article}      % Specifies the document class
+\usepackage{amsmath}
+\usepackage{graphicx}		 % Need this to include images
+\usepackage{hyperref}
+%% Define a HUGE 
+\makeatletter
+\newcommand\HUGE{\@setfontsize\Huge{50}{60}}
+\makeatother
+
+
+\begin{document}             % End of preamble and beginning of text.
+
+ 
+%titlepage
+\thispagestyle{empty}
+\begin{center}
+\begin{minipage}{0.9\linewidth}
+\flushright
+	      		 
+	%University logo
+    \includegraphics[width=0.5\linewidth]{univie.jpg}\par
+    \vspace{1.5cm}
+\centering 	
+    % Title
+	{\scshape{\LARGE Bachelorarbeit/Bachelor's Thesis\par}}
+	\vspace{1cm}
+	%Thesis title
+    {\scshape{\Large Computational Dynamics Investigation Of Polymer Topology \par}}
+    \vspace{2cm}
+    
+  
+ verfasst von / submitted by  \linebreak
+ {\Large Eray Koca\par}
+ 	\vspace{1.5cm}
+angestrebter akademischer Grad / in partial fulfilment of the requirements for the degree of\linebreak
+ {\Large Bachelor of Science (BSc)\par}
+	\vspace{1.5cm}
+
+\flushleft
+	
+
+\begin{tabular}{ll}
+Wien, 2025	\linebreak
+\vspace{1cm}&   \\
+  Studienkennzahl / degree programme code: & UA 033 676 \vspace{0.3cm} \\ 
+  Fachrichtung / degree programme: & Bachelorstudium Physik \vspace{0.3cm} \\
+  Betreut von / Supervisor: &  Univ. -Prof. Dipl. -Ing Dr. Christos Likos\\
+ \end{tabular}
+
+
+    
+    
+\end{minipage}
+\end{center}
+\clearpage
+
+\newpage
+
+\begin{abstract}
+This thesis focuses on computational polymer topology investigation. The study initially started with exploring the behavior of linear polymers through simulations, progressing to ring polymers and finally concentrating on double-ring polymers. The primary goal is to gather data via computational simulations and analyze the probability distribution of the geometrical behavior and further geometrical quantities of double-ring polymers.
+
+To advance understanding of polymer topology, this study aims to offer valuable computational insights, that encourage further experimental investigations to validate and build upon theoretical findings, ultimately enhancing the broader understanding of polymers. This work also intends to demonstrate how effectively computational simulations that have been used can investigate statistical properties.
+
+Computational polymer topology analysis investigates polymer structure and properties at the molecular level using various methods and potentials. One crucial method, that is used in this work, is Monte Carlo simulation, which employs random sampling to explore potential polymer configurations. The Metropolis criterion, also known as the Boltzmann acceptance criterion, determines whether proposed movements of the polymer are accepted based on the energy change, following the Boltzmann distribution.
+
+Specific potentials model interactions within polymer structures. The FENE potential (Finitely Extensible Nonlinear Elastic) describes elastic stretching of polymer bonds and prevents unphysical elongations by applying a strong restoring force beyond a certain length limit. The WCA potential (Weeks-Chandler-Andersen), a truncated Lennard-Jones potential, describes short-range repulsive interactions and ensures non-overlapping monomers within a polymer chain, resulting in self-avoiding polymers.
+
+The study defines two vectors originating from the midpoint between the rings to their centers of mass. By applying the Boltzmann distribution and statistically screening double-ring movements, a correlation factor can be determined. In addition, the gyration-tensor of the polymers, their eigenvalues and gyration-radia can be calculated, and for further understanding analysed.
+
+(Overall, it has been found that ...)
+
+
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+Understanding polymer topology is crucial for designing materials with tailored properties, as different structures influence mechanical strength, elasticity, thermal behavior, and chemical resistance. Beyond material science, polymer topology plays a key role in biological systems, such as the structural organization of DNA.
+
+Over the years, significant advancements have deepened our understanding of polymer topology. Early developments, including Staudinger’s macromolecular theory and Flory and Huggins’ statistical models, laid the foundation for studying polymer structures. Later, De Gennes introduced reptation theory to describe polymer dynamics, while knot theory provided a framework for analysing loops and entanglements. More recently, advances in supramolecular chemistry and controlled polymer synthesis have enabled precise topological control, with applications in nanotechnology and biomaterials (Flory, 1953; De Gennes, 1979).
+
+Among various polymer architectures, ring polymers have drawn significant interest due to their unique topological constraints, which affect their physical behavior. Unlike linear polymers, ring polymers lack free ends, leading to distinct dynamic and mechanical properties. However, more complex topologies, such as "self-avoiding double-ring polymers", remain relatively unexplored, despite their potential for material and biological applications.
+
+Recent research of Michiletti et al. (2011) explores the behavior of supercoiled ring polymers under shear flow, offering insights into their complex conformational dynamics. Their study combines simulations and theoretical modelling to examine how shear forces influence polymer deformation, relaxation, and entanglement. They demonstrate that supercoiling significantly alters a polymer’s response to flow, leading to distinct stretching and tumbling regimes. These findings contribute to understanding the rheology of topologically constrained polymers and provide a framework for investigating more intricate architectures.(Luca Tubiana et al., 2024) Their paper also sparked the interest for this work. 
+
+This thesis aims to conduct computational simulations to analyse the topological behavior of double-ring polymers. With simulations it examines a geometrical probability distribution and energy development and provide information on the topological characteristics. By doing so, this research advances the understanding of polymer topology and its implications.
+
+\newpage
+  
+\subsection{Polymers} 
+
+To define a polymer, the first step is to identify a monomer, the fundamental building block. Monomers link together over covalent bonds to form polymer chains. One key characteristic used to describe a polymer is the degree of polymerization $N$, which represents the number of monomers in a polymer chain. This value is expressed as $N = \frac{M}{M_{mon}}$, where $M$ is the number-average molar mass of the polymer, and $M_{mon}$ is the molecular weight of a single monomer. Since polymerization is a statistical process, the degree of polymerization is typically given as an average.
+
+Each polymer consists of a primary chain, known as the backbone, which provides the fundamental structure of the polymer. This micro-structure, the backbone, remains unchanged unless covalent bonds are broken. The length of the backbone, typically measured by the number of monomers it contains, is a key factor in describing the polymer chain.
+
+Furthermore, to determine the mass $M$ of a single molecule, the following relation can be used:
+
+\[
+M = \frac{M_{mol}}{N_A},
+\]
+where $M_{mol}$ is the molar mass of the molecule, and $N_A$ is Avogadro's number $6.02 \cdot 10^{23} mol^{-1}$.
+
+Additionally to be defined, isomers are molecules that share the same molecular formula but differ in the arrangement or position of their atoms. Isomers can be classified into structural isomers, that are molecules that have different connectivity between atoms and stereo-isomers, that are molecules that have the same connectivity but different spatial orientations.
+
+There are several types of monomers. Ethene or propen are typical example in case of plastics. If the polymer contains only one type of monomer, it is called homopolymers. Polymers that contain monomers of different type are called heteropolymers. DNA is a good example for this case.
+
+Beyond these basic classifications, polymers can also be distinguished by their molecular structure. A polymer can be linear, consisting of long, unbranched chains, or it can be branched, where side chains influence properties such as density and mechanical strength. Some polymers exhibit cross-linking, in which covalent bonds connect different chains, making them more rigid. In cases of extensive cross-linking, polymers form a network structure. Another important distinction is based on their thermal properties. Thermoplastics soften when heated and can be reshaped multiple times, while thermosets undergo an irreversible curing process, meaning they do not melt upon reheating.
+
+The behavior of a polymer is also influenced by intermolecular forces. Van der Waals forces play a role in determining flexibility and packing, while hydrogen bonding strengthens polymer networks, as seen in materials like nylon. In polymers containing polar functional groups, dipole-dipole interactions further impact their structural properties. These structural and molecular properties influence polymer behavior, setting the stage for understanding ideal versus real polymer chains.
+
+Since polymerization is a statistical process, real polymers consist of chains of varying lengths. This leads to differences in molecular weight, which can be described using different measures. The number-average molecular weight considers all molecules equally, while the weight-average molecular weight gives greater emphasis to larger molecules. The ratio of these two values, known as the polydispersity index (PDI), describes the molecular weight distribution in a polymer sample.
+
+The conformational statistics of polymer chains can be characterized by studying the probability distribution of their end-to-end vector. For a polymer composed of N monomers, the end-to-end vector $\vec{R}$ represents the displacement between the first and last monomer.
+
+
+
+\subsection{Modelling}
+
+\subsubsection{Ideal Polymers}
+In this model, which is the easiest possible, monomers do not interact with each other even when they approach each other in space. That means that a position can be shared by two monomers along the chain.
+Despite the simplicity of the model, many molecular chains can effectively be modelled as ideal polymers under a specific temperature denoted by $\theta$.
+
+In polymer physics, particularly when dealing with ideal chains, one of the fundamental descriptors of chain dimensions is the mean-squared end-to-end distance, denoted as $\langle R^2 \rangle$. For an ideal chain, this quantity can be expressed as
+\[
+\langle R^2 \rangle = C_n \cdot n \cdot l^2,
+\]
+where $n$ is the total number of segments in the polymer chain, $l$ is the length of each segment, and $C_n$ is a dimensionless constant that reflects the chain model being used. In the case of a freely jointed chain, where the orientation of each segment is completely uncorrelated with the others, $C_n$ equals 1. For more realistic models like the freely rotating chain, which incorporates a fixed bond angle between adjacent segments, $C_n$ becomes greater than 1 and increases with the degree of correlation between successive bonds, ultimately approaching a limiting value. (Rubinstein/Colby, 2003)
+
+Another important measure of the spatial distribution of a polymer chain is the radius of gyration $R_g$. This quantity represents the average squared distance of each monomer from the chain’s center of mass, providing a sense of how the monomers are spread out in space. For an ideal chain modelled as a random walk of Kuhn segments, the mean-squared radius of gyration is given by
+\[
+\langle R_g^2 \rangle = \frac{N b^2}{6},
+\]
+where $N$ is the number of Kuhn segments and $b$ is the Kuhn length, an effective segment length that accounts for the stiffness and persistence of the polymer chain. The Kuhn length is generally larger than the actual bond length, as it represents the length over which the chain behaves as if it were freely jointed.
+In this idealized framework, the relationship between the end-to-end distance and the Kuhn segment description simplifies to
+\[
+\langle R^2 \rangle = N b^2,
+\]
+which directly connects the overall size of the chain to the number and length of its effective segments. Combining this with the earlier expression for the radius of gyration leads to the well known relation
+\[
+\langle R_g^2 \rangle = \frac{\langle R^2 \rangle}{6},
+\]
+which is characteristic of Gaussian or ideal chain statistics. This proportionality is widely used in both theoretical models and experimental interpretations to relate different size metrics of polymer chains.
+
+Furthermore, the probability distribution $P$ of the end-to-end vector $\vec{R}$ for an ideal polymer chain is accurately described by a Gaussian function. For $\vert \vec{R} \vert \ll R_{max} = Nb $ the distribution is
+\[
+P(N, \vec{R}) = \left( \frac{3}{2 \pi N b^2} \right)^{3/2} \exp\left( -\frac{3 \vec{R}^2}{2 N b^2} \right),
+\]
+which highlights the random walk nature of ideal chain configurations.
+
+
+
+\subsubsection{Real Polymers}
+
+Polymer chains are macromolecules composed of repeated monomer units, and their behavior in solution is largely determined by the interactions between monomers and the surrounding solvent. These interactions, which can be both attractive and repulsive, play a crucial role in defining the polymer's conformation and its physical properties. One key concept in understanding polymer behavior is the excluded volume \( v \), which represents the effective space around each monomer that other monomers cannot occupy. The excluded volume is temperature-dependent and, near the \(\theta\)-temperature \( \theta \), is given by
+
+\[
+v \approx b^3 \left( \frac{T - \theta}{T} \right),
+\]
+where \( b \) is the segment length, and \( T \) is the temperature. At the \(\theta\)-temperature, the attractive and repulsive forces between monomers cancel each other out, making the excluded volume effectively zero. This special condition is known as the \(\theta\)-state, where the polymer chain behaves like an ideal random walk with no net interaction. In this case, the coil size or end-to-end distance scales as
+
+\[
+R_0 = b N^{1/2},
+\]
+where \( N \) is the number of monomers in the chain.
+
+When the temperature rises above \( \theta \), repulsive interactions between monomers dominate, leading to a positive excluded volume. As a result, the chain expands and behaves as a self-avoiding walk (SAW), corresponding to a good solvent, where the polymer is well-solvated. The scaling of the coil size or end-to-end distance in this regime is
+
+\[
+R_F \approx b \left( \frac{v}{b^3} \right)^{\frac{2\nu - 1}{6\nu - 2}} N^\nu,
+\]
+with \( \nu \approx 0.588 \) is the Flory exponent in three dimensions. In the case of a good thermal solvent, this scaling can be approximated as
+
+\[
+R_F \approx b \left( \frac{v}{b^3} \right)^{0.19} N^{0.588}.
+\]
+In such a good solvent, the chain can be thought of as a sequence of thermal blobs, locally ideal segments whose size decreases as the temperature increases due to enhanced repulsion. In an athermal solvent, the solvent quality does not change with temperature, and the excluded volume remains constant. The polymer chain still adopts a swollen SAW conformation, and its size scales similarly as
+
+\[
+R \approx b N^{0.588}.
+\]
+
+Conversely, when the temperature falls below \( \theta \), attractive forces between monomers outweigh the repulsive interactions, leading to a negative excluded volume. This causes the polymer chain to collapse into a compact globular structure, which is typical of a poor solvent. The size of the polymer coil in this regime scales as
+
+\[
+R_g \approx |v|^{-1/5} b^2 N^{1/3}.
+\]
+In the extreme case of a non-solvent, where the polymer is fully collapsed, the chain behaves like a dense sphere, and its size scales as:
+
+\[
+R \approx b N^{1/3}.
+\]
+
+These transitions between expanded, ideal, and collapsed conformations illustrate the sensitivity of polymer behavior to solvent quality and temperature. Understanding this interplay is essential for controlling polymer properties in various applications.
+
+\subparagraph{Chains and Excluded Volume Effects}
+Real polymer chains differ significantly from ideal models due to the presence of intra-chain interactions. A key interaction is the excluded volume effect, which prevents monomers from occupying the same spatial location. As a result, the polymer avoids itself and adopts a more extended conformation compared to an ideal chain.
+In this regime, the polymer adopts a self-avoiding walk conformation. The excluded volume leads to a non-Gaussian distribution for the end-to-end vector. While the exact analytical form of \( P(\vec{R}) \) for SAWs is not known, it can be approximated by a stretched exponential function for large \( N \)
+
+\[
+P(R) \sim R^{\theta} \exp\left( -A \left( \frac{R}{N^\nu} \right)^\delta \right),
+\]
+where \( \theta \) is a model-dependent exponent and  \( \delta = 1/(1 - \nu) \approx 2.43 \). The constant \( A \) encapsulates geometric and interaction-specific prefactors. This distribution reflects the asymmetry and long tail compared to the Gaussian case, indicating a higher probability for larger extensions due to the self-avoiding nature of the chain.
+The average end-to-end distance in this case scales as (Rubinstein/Colby, 2003)
+
+\[
+\langle R^2 \rangle \sim N^{2\nu} \approx N^{1.176}.
+\]
+
+
+\subparagraph{Radius of Gyration}
+
+A related measure of the polymer's size is the radius of gyration, \( R_g \), which is defined as the root-mean-square distance of the monomers from the center of mass of the chain. For real chains with excluded volume, \( R_g \) scales similarly to the end-to-end distance
+
+\[
+\langle R_g^2 \rangle \sim N^{2\nu}.
+\]
+The distribution of \( R_g \) also deviates from Gaussian behavior, reflecting the influence of solvent quality and temperature.
+
+\subparagraph{Quality and Chain Statistics}
+
+The probability distribution of polymer conformations is highly sensitive to the quality of the solvent, which affects the sign and magnitude of the excluded volume:
+
+\begin{itemize}
+    \item \textbf{Good solvent} (\( v > 0 \)): The chain swells due to dominant repulsive interactions. The end-to-end distribution is broad with a long tail.
+    \item \textbf{Theta solvent} (\( v = 0 \)): Attractive and repulsive forces balance out. The chain behaves ideally, and the distribution is Gaussian.
+    \item \textbf{Poor solvent} (\( v < 0 \)): Attractive forces dominate, leading to chain collapse. The end-to-end distribution becomes narrow and highly peaked.
+\end{itemize}
+
+
+\newpage
+
+
+\subsubsection{Monte Carlo Simulation}
+Monte Carlo (MC) simulations are a class of computational algorithms that use random sampling to estimate the behavior of complex systems. In statistical physics, they are particularly useful for exploring systems with many degrees of freedom, where exact solutions are intractable. By generating random configurations and accepting them based on physically motivated rules, such as the Boltzmann probability distribution, MC methods allow researchers to estimate equilibrium properties without solving the system analytically.
+
+In the context of polymer chains, MC simulations are especially well-suited because they can efficiently sample the vast space of possible conformations a polymer can adopt. Real polymer chains, unlike ideal ones, exhibit excluded volume effects and solvent-dependent interactions that make their conformational statistics highly non-trivial. Rather than attempting to account for every possible chain configuration, which becomes infeasible for long chains, MC methods generate a statistically representative ensemble of conformations based on random moves and energy-based acceptance criteria.
+This process can be understood intuitively as a form of "smart guessing": the algorithm explores the conformational space of the polymer chain, but with a bias toward physically likely states. Over many iterations, the simulation converges to an equilibrium distribution, from which properties like the average end-to-end distance, radius of gyration, and full conformational distributions can be computed.
+
+Monte Carlo simulations are particularly powerful for capturing how polymer chains behave under different solvent conditions. They can reproduce key phenomena such as the swelling of chains in good solvents, ideal behavior at the theta point, and collapse into compact globules in poor solvents. These transitions are governed by changes in excluded volume interactions, which MC methods can model effectively through appropriate potential functions and sampling strategies.
+
+In summary, MC methods offer a flexible and efficient approach for studying polymer chains by enabling the exploration of complex conformational landscapes and capturing the statistical behavior of systems where analytical approaches are limited.
+
+\subparagraph{Statistical Quantities for Monte Carlo Simulations}
+
+Monte Carlo simulations are based on concepts from statistical mechanics. These averages reflect the system’s behavior across all possible configurations, weighted by their physical likelihood. In this part some fundamental statistical quantities, that are used for this work, are presented:
+
+The partition function \( Z \) is a central quantity in statistical mechanics, serving as a normalization factor for probabilities. It accounts for all possible states of the system, weighting them by their energy and temperature. The partition function is given by:
+
+\[
+Z = \sum_i e^{-E_i / k_B T} ,
+\]
+where \( E_i \) is the energy of the \( i \)-th state, \( k_B \) is Boltzmann’s constant, and \( T \) is the temperature. Although the partition function is not directly computed in Monte Carlo simulations, it underlies the probabilistic sampling of polymer conformations. During a Monte Carlo simulation, configurations of the polymer chain are sampled with probabilities proportional to the Boltzmann factor \( e^{-E_i / k_B T} \).
+
+A key goal of Monte Carlo simulations is to compute thermal averages of various physical properties, such as the end-to-end distance, radius of gyration, or other observables. The thermal average \( \langle A \rangle \) of an observable \( A \) is the expectation value over all possible configurations, weighted by their Boltzmann probability
+
+\[
+\langle A \rangle = \frac{1}{Z} \sum_i A_i e^{-E_i / k_B T}
+\]
+
+In Monte Carlo simulations, instead of summing over all configurations directly (which is impractical for large systems), we estimate these averages by sampling a subset of configurations. Over a large number of accepted configurations \( M \), the average of \( A \) is approximated as
+
+\[
+\langle A \rangle \approx \frac{1}{M} \sum_{j=1}^M A_j,
+\]
+where \( A_j \) is the value of the observable in the \( j \)-th configuration.
+
+The variance of an observable \( A \) reflects how much it fluctuates across different sampled configurations and is given by
+
+\[
+Var(A) = \langle A^2 \rangle - \langle A \rangle^2
+\]
+The variance provides insight into the uncertainty in the measured value of \( A \). Monte Carlo simulations also rely on variance to estimate statistical error in the results. They allow for the calculation probability distributions of observables, such as the distribution of the end-to-end distance. (Frenkel/Smit, 2002) 
+
+
+
+
+\subsubsection{Metropolis Criterion}
+
+In this thesis, the Metropolis criterion is used as the core acceptance rule within the Monte Carlo simulations applied to model polymer chains. As discussed earlier, real polymers exhibit complex behavior due to excluded volume effects and solvent interactions, which make analytical solutions difficult. The Metropolis criterion allows us to simulate these systems by generating statistically probable configurations according to the Boltzmann distribution.
+
+Specifically, when a trial move changes the configuration of the polymer, for example, by repositioning a monomer, the change in energy \(\Delta E\) is calculated. If \(\Delta E \leq 0\), the move is accepted unconditionally, as it leads to a lower energy state. If \(\Delta E > 0\), the move is accepted with probability
+\begin{equation}
+P_{accept} = e^{-\Delta E / k_B T},
+\end{equation}
+ensuring that energetically unfavourable moves can still occur, allowing the system to explore its full conformational space. This method reflects the statistical mechanics principles previously discussed and is essential for studying thermal averages and distributions of observables like the end-to-end distance and radius of gyration under various solvent conditions.(Frenkel/Smit, 2002) 
+
+
+\subsubsection{WCA and FENE Potentials}
+To accurately simulate the behavior of real polymer chains in three dimensions, this thesis incorporates both excluded volume effects and finite bond flexibility. These are essential physical features introduced in the theoretical background, where it has been discussed how real polymers deviate from ideal chain models due to the finite size of monomers and the constrained but flexible nature of bonds. Capturing these effects is crucial for generating realistic polymer conformations, particularly in regimes where self-avoidance and bond extensibility play a significant role. In this context, the simulations in this thesis use a combination of two well-established interaction potentials: the Weeks-Chandler-Andersen (WCA) potential and the Finite Extensible Nonlinear Elastic (FENE) potential. These methods are used throughout the thesis to generate and analyze polymer configurations via the Metropolis Monte Carlo method.
+
+The WCA potential is used to model the repulsive interaction between non-bonded monomers. This interaction enforces the excluded volume effect by preventing monomers from occupying the same spatial region. The WCA potential is derived from the Lennard-Jones potential but truncated and shifted to include only the repulsive part, resulting in a purely repulsive interaction. It is defined as
+\begin{equation}
+U_{WCA}(r) = 
+\begin{cases}
+4\epsilon \left[ \left( \dfrac{\sigma}{r} \right)^{12} - \left( \dfrac{\sigma}{r} \right)^6 \right] + \epsilon, & \text{for } r \leq 2^{1/6}\sigma \\
+0, & \text{for } r > 2^{1/6}\sigma,
+\end{cases}
+\end{equation}
+where \( r \) is the distance between two monomers, \( \sigma \) is the effective diameter of a monomer, and \( \epsilon \) determines the strength of the repulsive interaction. The potential smoothly approaches zero at the cutoff distance \( r = 2^{1/6}\sigma \), ensuring a continuous energy landscape without introducing any attractive forces. This reflects the behavior of polymers in good solvents, where monomers repel each other due to steric hindrance and excluded volume effects.
+
+To model the interaction between bonded monomers, the FENE potential is used. This potential captures the elasticity of bonds while preventing them from stretching beyond a finite limit. The FENE potential is given by
+\begin{equation}
+U_{\text{FENE}}(r) = -\frac{1}{2} k R_0^2 \ln \left[ 1 - \left( \frac{r}{R_0} \right)^2 \right], \quad \text{for } r < R_0,
+\end{equation}
+where \( r \) is the distance between bonded monomers, \( k \) is the spring constant that controls bond stiffness, and \( R_0 \) is the maximum extension allowed for the bond. As the bond length approaches \( R_0 \), the potential diverges, effectively restricting bond extension to a physical limit. This provides a nonlinear elastic behavior typical of real polymer chains, where bonds can fluctuate due to thermal motion but cannot extend indefinitely.
+
+The combination of WCA and FENE potentials results in a coarse-grained polymer model that maintains chain connectivity while realistically accounting for both excluded volume and bond extensibility. This framework allows to move beyond ideal models and simulate physically realistic chain conformations. It serves as the basis for all simulations in this thesis, enabling analysis of conformational properties.
+
+\newpage
+
+\section{Double-Ring Polymers}
+my own work
+by linking to monte carlo section, explaining which probability distribution we are interested in.
+why can we lot the histogram with boltzmann distribution?
+
+Explain code and results on: code overall, angle calculation, energy calculation, correlation time, gyration radius, K-value calculation (Probability examination)
+
+Code erklären - Hinweis auf MC-Algorithmus  --- 3 pages
+
+Simulation präsentieren --- 2 pages
+
+Ergebnisse präsentoeren --- 5 pages
+
+Ergebnisse erklären --- 2 pages
+
+zusammenfassen --- 1 page
+
+\subsection{Conclusion}
+explanation why it was expected to have energy minimization
+steifigkeit
+meaning of gyration radia
+
+--- 2 pages
+
+
+\pagebreak
+
+\bibliographystyle{acm}
+\bibliography{BSc_Latex_Template}
+
+\end{document}
