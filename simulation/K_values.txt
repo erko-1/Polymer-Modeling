@@ -1,5 +1,0 @@
-Filename	Slope (-βK)	K
-angles1.txt	-395.395863	395.395863
-
-Mean K: 395.395863
-Standard Deviation: 0.000000
