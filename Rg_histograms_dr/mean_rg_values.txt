@@ -1,0 +1,4 @@
+Gemittelte Rg^2-Werte über alle Dateien:
+Ring 1: 4.46529
+Ring 2: 4.49133
+Gesamtsystem: 13.45648

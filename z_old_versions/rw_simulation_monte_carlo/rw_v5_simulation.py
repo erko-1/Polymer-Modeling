@@ -1,0 +1,116 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
+from mpl_toolkits.mplot3d import Axes3D
+
+# Function to initialize particle positions
+def initialize_particles(num_particles, box_size):
+    return np.random.uniform(0, box_size, (num_particles, 3))  # 3D positions
+
+# Function to apply periodic boundary conditions
+def apply_periodic_boundary(position, box_size):
+    return position % box_size
+
+# Function to calculate Lennard-Jones potential
+def lennard_jones_potential(r, epsilon=1.0, sigma=1.0):
+    if r == 0:  # Prevent division by zero
+        return np.inf
+    if r > 2 * sigma:
+        return 0
+    else:
+        sr6 = (sigma / r)**6
+        sr12 = sr6**2
+        return 4 * epsilon * (sr12 - sr6)
+
+# Function to calculate the total potential energy of the system
+def total_potential_energy(positions, box_size, epsilon=1.0, sigma=1.0):
+    num_particles = positions.shape[0]
+    energy = 0.0
+    for i in range(num_particles):
+        for j in range(i + 1, num_particles):  # Avoid double counting
+            # Compute minimum image distance
+            delta = positions[i] - positions[j]
+            delta -= box_size * np.round(delta / box_size)  # Periodic boundary conditions
+            r = np.linalg.norm(delta)
+            energy += lennard_jones_potential(r, epsilon, sigma)
+    return energy
+
+# Function to perform one step of the Monte Carlo random walk with energy check
+def monte_carlo_step(positions, step_size, box_size, epsilon=1.0, sigma=1.0, temperature=1.0, boltzmann_const=1.0):
+    new_positions = positions.copy()
+    for i in range(positions.shape[0]):
+        # Random step for a single particle
+        step = np.random.uniform(-step_size, step_size, positions.shape[1])
+        trial_position = apply_periodic_boundary(new_positions[i] + step, box_size)
+
+        # Compute energy difference
+        original_position = new_positions[i].copy()
+        new_positions[i] = trial_position
+        energy_new = total_potential_energy(new_positions, box_size, epsilon, sigma)
+        new_positions[i] = original_position
+        energy_old = total_potential_energy(new_positions, box_size, epsilon, sigma)
+
+        delta_energy = energy_new - energy_old
+
+        # Accept or reject move based on Boltzmann criterion
+        if delta_energy < 0 or np.random.rand() < np.exp(-delta_energy / (boltzmann_const * temperature)):
+            new_positions[i] = trial_position  # Accept move
+
+    return new_positions
+
+# Main function to simulate the random walk
+def random_walk_simulation(num_particles=100, box_size=10.0, step_size=1.0, num_steps=100, epsilon=1.0, sigma=1.0):
+    # Initialize particle positions
+    positions = initialize_particles(num_particles, box_size)
+    trajectory = [positions.copy()]
+
+    for _ in range(num_steps):
+        positions = monte_carlo_step(positions, step_size, box_size, epsilon, sigma)
+        trajectory.append(positions.copy())
+
+    return trajectory
+
+# Create a 3D animation
+def animate_simulation(trajectory, box_size, save_as_video=False):
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlim(0, box_size)
+    ax.set_ylim(0, box_size)
+    ax.set_zlim(0, box_size)
+    ax.set_title("3D Random Walk Simulation")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
+    points, = ax.plot([], [], [], 'o', color='red', alpha=0.7, markersize=15)
+
+    def update(frame):
+        positions = trajectory[frame]
+        points.set_data(positions[:, 0], positions[:, 1])
+        points.set_3d_properties(positions[:, 2])
+        ax.set_title(f"Step {frame}")
+        return points,
+
+    # Use a fixed interval for animation
+    interval = 100  # Fixed interval in milliseconds
+    anim = FuncAnimation(fig, update, frames=len(trajectory), interval=interval, blit=True)
+
+    if save_as_video:
+        anim.save("random_walk_simulation_v5.gif", writer=PillowWriter(fps=10))  # Save as GIF
+    else:
+        plt.show()
+
+# Parameters
+num_particles = 26     # Number of particles
+box_size = 10.0        # Size of the box
+step_size = 0.1        # Step size for the random walk
+num_steps = 100        # Number of steps to simulate
+epsilon = 1.0          # Epsilon
+sigma = 1.0            # Sigma - distance where potential is zero
+temperature = 0.0001        # Simulation temperature of the system (for Monte Carlo / Boltzmann validation)
+boltzmann_const = 1.0  # k_B
+
+# Run the simulation
+trajectory = random_walk_simulation(num_particles, box_size, step_size, num_steps, epsilon, sigma)
+
+# Generate and display/save the animation
+animate_simulation(trajectory, box_size, save_as_video=True)  # Set True to save as GIF

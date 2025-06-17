@@ -1,0 +1,10 @@
+Gemittelte sortierte Eigenwerte (über alle Dateien und Zeitpunkte)
+System     |         λ1 |         λ2 |         λ3
+---------------------------------------------
+Ring 1     |     2.5607 |     1.7621 |     0.1425
+Ring 2     |     2.6743 |     1.6949 |     0.1221
+Total      |    11.2888 |     2.0010 |     0.1667
+
+
+Total - Prolateness_mean: 0.8088991991802001
+Total - Anisotropy_mean: 0.5890574410683721

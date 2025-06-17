@@ -1,0 +1,7 @@
+Gemittelte sortierte Eigenwerte (über alle Dateien)
+        λ1 |         λ2 |         λ3
+----------------------------------
+    3.0983 |     2.3659 |     0.0797
+
+Anisotropy b (mean): 0.241991
+Prolateness S (mean): -0.181447
