@@ -1,6 +1,0 @@
-Filename	Slope (-βK)	 K
-DR_angles.txt	-3822.861498	 3822.861498
-DR_angles1.txt	-11105.394208	 11105.394208
-
-Mean K: 7464.127853
-Standard Deviation: 3641.266355
